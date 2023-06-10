@@ -1,10 +1,11 @@
 ---
 version: '3.7'
 
-x-default-variables: &default-variables
+x-default-variables:
+  &default-variables
   LOG4J_CONFIGURATION_FILE: /config/log-config.xml
   JAVA_OPTS: -Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m
-  
+
 x-besu-bootnode-def:
   &besu-bootnode-def
   restart: "on-failure"
@@ -30,7 +31,7 @@ x-besu-bootnode-def:
 x-besu-def:
   &besu-def
   restart: "on-failure"
-  image: hyperledger/besu:21.1.5
+  image: hyperledger/besu:21.7.3
   entrypoint:
     - /bin/bash
     - -c
@@ -52,7 +53,7 @@ x-besu-def:
 x-orion-def:
   &orion-def
   image: consensys/quorum-orion:21.1.0
-  command: ["/config/orion.conf"]
+  command: [ "/config/orion.conf" ]
 
 services:
   validator1:
@@ -76,7 +77,7 @@ services:
     networks:
       besu:
         ipv4_address: 172.16.237.11
-  
+
   orion1:
     <<: *orion-def
     environment:
@@ -91,7 +92,7 @@ services:
     networks:
       besu:
         ipv4_address: 172.16.237.21
-  
+
   validator2:
     <<: *besu-def
     environment:
@@ -114,7 +115,7 @@ services:
     networks:
       besu:
         ipv4_address: 172.16.237.12
-  
+
   orion2:
     <<: *orion-def
     environment:
@@ -129,7 +130,7 @@ services:
     networks:
       besu:
         ipv4_address: 172.16.237.22
-        
+
   validator3:
     <<: *besu-def
     environment:
@@ -167,7 +168,7 @@ services:
     networks:
       besu:
         ipv4_address: 172.16.237.23
-        
+
   validator4:
     <<: *besu-def
     environment:
@@ -209,7 +210,8 @@ services:
 volumes:
   public-keys:
 
+
 networks:
   besu:
-    external:
-      name: besu
+    external: true
+    name: besu

@@ -1,6 +1,7 @@
 version: '3.7'
 
-x-container-common: &container-common
+x-container-common:
+  &container-common
   restart: ${CONTAINER_RESTART-on-failure}
   networks:
     - qkm
@@ -41,7 +42,15 @@ services:
     networks:
       - qkm
     healthcheck:
-      test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8545"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "--proxy",
+          "off",
+          "http://localhost:8545"
+        ]
       interval: 3s
       timeout: 3s
       retries: 10
@@ -53,5 +62,5 @@ volumes:
 
 networks:
   qkm:
-    external:
-      name: deps_qkm
+    external: true
+    name: deps_qkm

@@ -22,40 +22,48 @@ endif
 .PHONY: all lint lint-ci integration-tests swagger-tool
 
 hashicorp:
-	@docker-compose -f deps/hashicorp/docker-compose.yml up --build -d $(DEPS_HASHICORP)
+	@docker compose -f deps/hashicorp/docker-compose.yml up --build -d $(DEPS_HASHICORP)
 	@sleep 2 # Sleep couple seconds to wait token to be created
 
 hashicorp-tls:
-	@docker-compose -f deps/hashicorp/docker-compose.yml up --build -d $(DEPS_HASHICORP_TLS)
+	@docker compose -f deps/hashicorp/docker-compose.yml up --build -d $(DEPS_HASHICORP_TLS)
 	@sleep 2 # Sleep couple seconds to wait token to be created
 
 hashicorp-down:
-	@docker-compose -f deps/hashicorp/docker-compose.yml down --volumes --timeout 0
+	@docker compose -f deps/hashicorp/docker-compose.yml down --volumes --timeout 0
 
 networks:
 	@docker network create --driver=bridge hashicorp || true
 	@docker network create --driver=bridge --subnet=172.16.237.0/24 besu || true
 	@docker network create --driver=bridge --subnet=172.16.238.0/24 quorum || true
+	@docker network create --driver=bridge --subnet=172.16.239.0/24 deps_qkm || true
 
 down-networks:
+	@docker network rm deps_qkm || true
 	@docker network rm quorum || true
 	@docker network rm besu || true
 	@docker network rm hashicorp || true
 
+volumes:
+	@docker volume create --name=hashicorp-token || true
+
+down-volumes:
+	@docker volume rm hashicorp-token || true
+
 postgres:
-	@docker-compose -f deps/docker-compose.yml up -d $(DEPS_POSTGRES)
+	@docker compose -f deps/docker-compose.yml up -d $(DEPS_POSTGRES)
 
 postgres-tls:
-	@docker-compose -f deps/docker-compose.yml up -d $(DEPS_POSTGRES_TLS)
+	@docker compose -f deps/docker-compose.yml up -d $(DEPS_POSTGRES_TLS)
 
 postgres-down:
-	@docker-compose -f deps/docker-compose.yml down --volumes --timeout 0
+	@docker compose -f deps/docker-compose.yml down --volumes --timeout 0
 
-deps: networks hashicorp postgres
+deps: networks volumes hashicorp postgres
 
 deps-tls: networks generate-pki hashicorp-tls postgres-tls
 
-down-deps: postgres-down hashicorp-down down-networks
+down-deps: postgres-down hashicorp-down down-volumes down-networks
 
 run-acceptance:
 	@mkdir -p build/coverage
@@ -90,21 +98,21 @@ run-race: ## Run data race detector
 	@go test -count=1 -race -short $(PACKAGES)
 
 qkm: gobuild
-	@docker-compose -f ./docker-compose.dev.yml up --force-recreate --build -d $(KEY_MANAGER_SERVICES)
+	@docker compose -f ./docker-compose.dev.yml up --force-recreate --build -d $(KEY_MANAGER_SERVICES)
 
 dev: deps qkm
 
 up: deps go-quorum besu geth gobuild qkm
 
 up-tls: deps-tls go-quorum besu geth gobuild
-	@docker-compose -f ./docker-compose.dev.yml up --build -d $(KEY_MANAGER_SERVICES)
+	@docker compose -f ./docker-compose.dev.yml up --build -d $(KEY_MANAGER_SERVICES)
 
 down: down-go-quorum down-besu down-geth
-	@docker-compose -f ./docker-compose.dev.yml down --volumes --timeout 0
+	@docker compose -f ./docker-compose.dev.yml down --volumes --timeout 0
 	@make down-deps
 
 down-dev:
-	@docker-compose -f ./docker-compose.dev.yml down --volumes --timeout 0
+	@docker compose -f ./docker-compose.dev.yml down --volumes --timeout 0
 
 run: gobuild
 	@./build/bin/key-manager run
@@ -113,34 +121,34 @@ run-dbg: gobuild-dbg
 	@dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec ./build/bin/key-manager run
 
 go-quorum: networks
-	@docker-compose -f deps/go-quorum/docker-compose.yml up -d
+	@docker compose -f deps/go-quorum/docker-compose.yml up -d
 
 stop-go-quorum:
-	@docker-compose -f deps/go-quorum/docker-compose.yml stop
+	@docker compose -f deps/go-quorum/docker-compose.yml stop
 
 down-go-quorum:
-	@docker-compose -f deps/go-quorum/docker-compose.yml down --volumes --timeout 0
+	@docker compose -f deps/go-quorum/docker-compose.yml down --volumes --timeout 0
 
 besu: networks
-	@docker-compose -f deps/besu/docker-compose.yml up -d
+	@docker compose -f deps/besu/docker-compose.yml up -d
 
 stop-besu:
-	@docker-compose -f deps/besu/docker-compose.yml stop
+	@docker compose -f deps/besu/docker-compose.yml stop
 
 down-besu:
-	@docker-compose -f deps/besu/docker-compose.yml down --volumes --timeout 0
+	@docker compose -f deps/besu/docker-compose.yml down --volumes --timeout 0
 
 geth:
-	@docker-compose -f deps/geth/docker-compose.yml up -d
+	@docker compose -f deps/geth/docker-compose.yml up -d
 
 stop-geth:
-	@docker-compose -f deps/geth/docker-compose.yml stop
+	@docker compose -f deps/geth/docker-compose.yml stop
 
 down-geth:
-	@docker-compose -f deps/geth/docker-compose.yml down  --volumes --timeout 0
+	@docker compose -f deps/geth/docker-compose.yml down  --volumes --timeout 0
 
 sync: gobuild
-	@docker-compose -f ./docker-compose.dev.yml up sync
+	@docker compose -f ./docker-compose.dev.yml up sync
 
 lint: ## Run linter to fix issues
 	@misspell -w $(GOFILES)
@@ -178,10 +186,10 @@ deploy-remote-env:
 	@bash ./scripts/deploy-remote-env.sh
 
 pgadmin:
-	@docker-compose -f deps/docker-compose-tools.yml up -d pgadmin
+	@docker compose -f deps/docker-compose-tools.yml up -d pgadmin
 
 down-pgadmin:
-	@docker-compose -f deps/docker-compose-tools.yml rm --force -s -v pgadmin
+	@docker compose -f deps/docker-compose-tools.yml rm --force -s -v pgadmin
 
 pki-deps:
 	@GO111MODULE=off go get github.com/cloudflare/cfssl/cmd/cfssl

@@ -1,6 +1,7 @@
 version: "3.7"
 
-x-default-variables: &default-variables
+x-default-variables:
+  &default-variables
   LOG_LEVEL: ${LOG_LEVEL-INFO}
   LOG_FORMAT: ${LOG_FORMAT-json}
   MANIFEST_PATH: ${MANIFEST_PATH-/manifests}
@@ -19,9 +20,9 @@ x-default-variables: &default-variables
   DB_DATABASE: ${DB_DATABASE-}
   DB_POOLSIZE: ${DB_POOLSIZE-}
   DB_POOL_TIMEOUT: ${DB_POOL_TIMEOUT-}
-  
 
-x-container-common: &container-common
+x-container-common:
+  &container-common
   image: golang:1.16-buster
   entrypoint: /bin/main
 
@@ -57,7 +58,7 @@ services:
       - 8080:8080
       - 8081:8081
       - 8443:8443
-#      - 2345:2345
+    #      - 2345:2345
     depends_on:
       - migration
     networks:
@@ -75,12 +76,12 @@ services:
       - ./deps/config/apikey:/apikey:ro
       - ./deps/config/oidc:/oidc:ro
       - hashicorp-token:/vault/token:ro
-#      - /usr/local/bin/dlv:/usr/local/bin/dlv
-#    entrypoint:
-#      - sh
-#      - -c
-#      - |
-#        dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec /bin/main run
+  #      - /usr/local/bin/dlv:/usr/local/bin/dlv
+  #    entrypoint:
+  #      - sh
+  #      - -c
+  #      - |
+  #        dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec /bin/main run
 
   sync:
     <<: *container-common
@@ -98,20 +99,19 @@ services:
 
 networks:
   quorum:
-    external:
-      name: quorum
+    external: true
+    name: quorum
   besu:
-    external:
-      name: besu
+    external: true
+    name: besu
   hashicorp:
-    external:
-      name: hashicorp
+    external: true
+    name: hashicorp
   qkm:
-    external:
-      name: deps_qkm
+    external: true
+    name: deps_qkm
 
 volumes:
   hashicorp-token:
-    external:
-      name: hashicorp-token
-
+    external: true
+    name: hashicorp-token

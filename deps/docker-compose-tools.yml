@@ -23,5 +23,5 @@ volumes:
 
 networks:
   qkm:
-    external:
-      name: deps_qkm
+    external: true
+    name: deps_qkm

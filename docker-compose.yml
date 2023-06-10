@@ -1,6 +1,7 @@
 version: "3.8"
 
-x-default-variables: &default-variables
+x-default-variables:
+  &default-variables
   LOG_LEVEL: ${LOG_LEVEL-INFO}
   LOG_FORMAT: ${LOG_FORMAT-text}
   HTTP_PORT: ${HTTP_PORT-8080}
@@ -29,7 +30,7 @@ x-default-variables: &default-variables
 
 services:
   postgres:
-    image: postgres:13.4-alpine
+    image: postgres:13.11-alpine
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:
