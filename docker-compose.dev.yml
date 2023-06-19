@@ -2,13 +2,13 @@ version: "3.7"
 
 x-default-variables:
   &default-variables
-  LOG_LEVEL: ${LOG_LEVEL-debug}
+  LOG_LEVEL: ${LOG_LEVEL-info}
   LOG_FORMAT: ${LOG_FORMAT-json}
   MANIFEST_PATH: ${MANIFEST_PATH-/manifests}
   TEST_DATA: ${TEST_DATA-}
-  HTTP_PORT: ${HTTP_PORT-8082}
+  HTTP_PORT: ${HTTP_PORT-8080}
   HTTP_HOST: ${HTTP_HOST-0.0.0.0}
-  HEALTH_PORT: ${HEALTH_PORT-8081}
+  HEALTH_PORT: ${HEALTH_PORT:-8081}
   DB_TLS_SSLMODE: ${DB_TLS_SSLMODE-disable}
   DB_TLS_CERT: ${DB_TLS_CERT-}
   DB_TLS_KEY: ${DB_TLS_KEY-}
@@ -55,9 +55,8 @@ services:
       AUTH_TLS_CA: ${AUTH_TLS_CA-}
       AUTH_API_KEY_FILE: ${AUTH_API_KEY_FILE-}
     ports:
-      - 8080:8080
-      - 8081:8081
-      - 8082:8082
+      - ${HTTP_PORT:-8080}:${HTTP_PORT:-8080}
+      - ${HEALTH_PORT:-8081}:${HEALTH_PORT:-8081}
       - 8443:8443
     #      - 2345:2345
     depends_on:
