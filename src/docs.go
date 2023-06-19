@@ -8,6 +8,7 @@ package src
 // @license.url https://mariadb.com/bsl11/
 
 // @host https://consensys.github.io/quorum-key-manager
+// @host 127.0.0.1:8082
 // @BasePath /
 // @query.collection.format multi
 

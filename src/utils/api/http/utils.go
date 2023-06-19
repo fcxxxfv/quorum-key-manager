@@ -44,7 +44,7 @@ func (h *UtilsHandler) Register(r *mux.Router) {
 // @Success      204      "Successful verification"
 // @Failure      422      {object}  infrahttp.ErrorResponse  "Cannot verify signature"
 // @Failure      500      {object}  infrahttp.ErrorResponse  "Internal server error"
-// @Router       /keys/verify-signature [post]
+// @Router       /utilities/keys/verify-signature [post]
 func (h *UtilsHandler) verifySignature(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 
@@ -76,7 +76,7 @@ func (h *UtilsHandler) verifySignature(rw http.ResponseWriter, request *http.Req
 // @Success      200      {string}  string                   "Recovered sender address"
 // @Failure      400      {object}  infrahttp.ErrorResponse  "Invalid request format"
 // @Failure      500      {object}  infrahttp.ErrorResponse  "Internal server error"
-// @Router       /ethereum/ec-recover [post]
+// @Router       /utilities/ethereum/ec-recover [post]
 func (h *UtilsHandler) ecRecover(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 
@@ -104,7 +104,7 @@ func (h *UtilsHandler) ecRecover(rw http.ResponseWriter, request *http.Request) 
 // @Success      204      "Successful verification"
 // @Failure      422      {object}  infrahttp.ErrorResponse  "Cannot verify signature"
 // @Failure      500      {object}  infrahttp.ErrorResponse  "Internal server error"
-// @Router       /ethereum/verify-message [post]
+// @Router       /utilities/ethereum/verify-message [post]
 func (h *UtilsHandler) verifyMessage(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 
@@ -132,7 +132,7 @@ func (h *UtilsHandler) verifyMessage(rw http.ResponseWriter, request *http.Reque
 // @Success      204      "Successful verification"
 // @Failure      422      {object}  infrahttp.ErrorResponse  "Cannot verify signature"
 // @Failure      500      {object}  infrahttp.ErrorResponse  "Internal server error"
-// @Router       /ethereum/verify-typed-data [post]
+// @Router       /utilities/ethereum/verify-typed-data [post]
 func (h *UtilsHandler) verifyTypedData(rw http.ResponseWriter, request *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 

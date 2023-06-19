@@ -2,11 +2,11 @@ version: "3.7"
 
 x-default-variables:
   &default-variables
-  LOG_LEVEL: ${LOG_LEVEL-INFO}
+  LOG_LEVEL: ${LOG_LEVEL-debug}
   LOG_FORMAT: ${LOG_FORMAT-json}
   MANIFEST_PATH: ${MANIFEST_PATH-/manifests}
   TEST_DATA: ${TEST_DATA-}
-  HTTP_PORT: ${HTTP_PORT-8080}
+  HTTP_PORT: ${HTTP_PORT-8082}
   HTTP_HOST: ${HTTP_HOST-0.0.0.0}
   HEALTH_PORT: ${HEALTH_PORT-8081}
   DB_TLS_SSLMODE: ${DB_TLS_SSLMODE-disable}
@@ -23,7 +23,7 @@ x-default-variables:
 
 x-container-common:
   &container-common
-  image: golang:1.16-buster
+  image: golang:1.19-buster
   entrypoint: /bin/main
 
 services:
@@ -57,6 +57,7 @@ services:
     ports:
       - 8080:8080
       - 8081:8081
+      - 8082:8082
       - 8443:8443
     #      - 2345:2345
     depends_on:

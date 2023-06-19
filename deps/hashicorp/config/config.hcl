@@ -3,7 +3,7 @@ backend "file" {
 }
 
 listener "tcp" {
-  address = "hashicorp:8200"
+  address = ":8200"
   tls_disable = true
 }
 
