@@ -1,0 +1,5 @@
+- kind: Node
+  name: geth-node
+  specs:
+    rpc:
+      addr: http://geth:8545

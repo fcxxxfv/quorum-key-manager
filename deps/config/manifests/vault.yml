@@ -1,0 +1,11 @@
+- kind: Vault
+  type: azure
+  name: akv-europe
+  # allowed_tenants: [tenant1, tenant2]
+  specs:
+    vault_name: qkm-test
+    tenant_id: eccf3bc3-97e2-4917-8768-94bad712c90d
+    client_id: b84cc036-ed61-4eaf-bb05-780152a10143
+    client_secret: yIk8Q~l7CLLjJZoHfJVDPqmqydhaGn3CyOo6EaS1
+
+

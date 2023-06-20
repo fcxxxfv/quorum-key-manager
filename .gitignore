@@ -50,7 +50,7 @@ tests/report/output/report.html
 tests/report/output/report.json
 
 # Manifests
-deps/config/manifests/*.yml
+#deps/config/manifests/*.yml
 
 # config pki ,ca, certificates
 deps/config/**/*.crt

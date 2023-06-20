@@ -1,0 +1,23 @@
+
+- kind: Store
+  type: key
+  name: akv-keys
+  # allowed_tenants: []
+  specs:
+    vault: akv-europe
+
+- kind: Store
+  type: secret
+  name: akv-secrets
+  # allowed_tenants: []
+  specs:
+    vault: akv-europe
+
+
+
+- kind: Store
+  type: ethereum
+  name: eth-accounts
+  # allowed_tenants: []
+  specs:
+    key_store: akv-keys
