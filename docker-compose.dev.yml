@@ -27,20 +27,6 @@ x-container-common:
   entrypoint: /bin/main
 
 services:
-  migration:
-    <<: *container-common
-    environment:
-      <<: *default-variables
-    networks:
-      - qkm
-    command: migrate up
-    restart: "on-failure"
-    volumes:
-      - ./build/bin/key-manager:/bin/main:ro
-      - ./deps/migrations:/migrations:ro
-      - ./deps/config/certificates:/certificates
-      - ./deps/config/ca:/ca:ro
-
   key-manager:
     <<: *container-common
     environment:
@@ -59,8 +45,6 @@ services:
       - ${HEALTH_PORT:-8081}:${HEALTH_PORT:-8081}
       - 8443:8443
     #      - 2345:2345
-    depends_on:
-      - migration
     networks:
       - quorum
       - besu

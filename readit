@@ -1,0 +1,84 @@
+
+
+
+
+1. install docker
+    https://docs.docker.com/desktop/install/mac-install/
+
+2.  install cast
+
+    https://learnblockchain.cn/docs/foundry/i18n/zh/getting-started/installation.html
+
+3. start serice
+    make up
+   
+    启动信息
+    
+    sunny-MacBook-Pro:gop02 air$ docker ps 
+    CONTAINER ID   IMAGE                        COMMAND                  CREATED          STATUS                    PORTS                                                      NAMES
+    47f13663cac0   golang:1.19-buster           "/bin/main run"          23 minutes ago   Up 23 minutes             0.0.0.0:8080-8081->8080-8081/tcp, 0.0.0.0:8443->8443/tcp   quorum-key-manager-key-manager-1
+    1da8aba50ecb   ethereum/client-go:v1.10.9   "/bin/sh -c 'geth --…"   37 minutes ago   Up 37 minutes (healthy)   8546/tcp, 30303/tcp, 30303/udp, 0.0.0.0:8546->8545/tcp     geth-geth-1
+    2695a92ab42c   postgres:13.11-alpine        "docker-entrypoint.s…"   37 minutes ago   Up 37 minutes             0.0.0.0:65179->5432/tcp                                    deps-postgres-1
+
+创建一个账户
+
+curl -X POST 'http://localhost:8080/stores/eth-accounts/ethereum'
+{"publicKey":"0x047a209d83ffe41878210b562bcf827566b2fe3fd5b63e6391bc22b2c51030157b9916ee0f347f166d31ef92c5681d1d9cfba2417aa6e712f0c0fdae1ffea88dbd","compressedPublicKey":"0x037a209d83ffe41878210b562bcf827566b2fe3fd5b63e6391bc22b2c51030157b","createdAt":"2023-06-19T16:27:28.574784214Z","updatedAt":"2023-06-19T16:27:28.574784461Z","keyId":"qkm-iDky3T6FhssdO5W","address":"0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949","disabled":false}
+
+"address":"0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949"
+
+
+
+给创建的地址转点toekn
+
+cast send -r http://127.0.0.1:8546 -f 7e654d251da770a068413677967f6d3ea2fea9e4 -i --chain 888 --value 5000000000000000000 --private-key 0x56202652fdffd802b7252a456dbd8f3ecc0352bbde76c23b40afe8aebd714e2e 0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949
+
+
+通过key-manager 发送交易
+
+sunny-MacBook-Pro:gop02 air$ cast send -r http://127.0.0.1:8546 -f 7e654d251da770a068413677967f6d3ea2fea9e4 -i --chain 888 --value 5000000000000000000 --private-key 0x56202652fdffd802b7252a456dbd8f3ecc0352bbde76c23b40afe8aebd714e2e 0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949
+
+blockHash               0xf55668e889a26e00b794f288f25c1d1e9180b79f802aca2245b1042f4d692da9
+blockNumber             528
+contractAddress
+cumulativeGasUsed       21000
+effectiveGasPrice       3000000007
+gasUsed                 21000
+logs                    []
+logsBloom               0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+root
+status                  1
+transactionHash         0x26dc528caad2dcc0f299db12b13d3d6c4fb9c347c85d6d297e1b24322ca06ae4
+transactionIndex        0
+type                    2
+sunny-MacBook-Pro:gop02 air$
+
+
+通过key-manager 获取交易信息
+
+curl -H "Content-Type: application/json" -X POST --data '{"jsonrpc":"2.0","method":"eth_sendTransaction","params":[{"from": "0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949","to": "0xd46e8dd67c5d32be8058bb8eb970870f07244567", "data":"0xafed", "value": "0x12a05f200"}], "id":1}' http://localhost:8080/nodes/geth-node
+
+{"jsonrpc":"2.0","result":"0x944da4ca2c0d58ab6c2b6f6f2fc5fd9e6f0dccf35f53d114424514e43d4d45b9","error":null,"id":1}
+
+
+curl -H "Content-Type: application/json" -X POST --data '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x944da4ca2c0d58ab6c2b6f6f2fc5fd9e6f0dccf35f53d114424514e43d4d45b9"],"id":1}' http://localhost:8080/nodes/geth-node
+
+
+获取链上交易
+
+sunny-MacBook-Pro:gop02 air$ cast tx 0x944da4ca2c0d58ab6c2b6f6f2fc5fd9e6f0dccf35f53d114424514e43d4d45b9 -r http://127.0.0.1:8546
+
+blockHash            0x0be21ca4ca16090cb31120614be5a48dd41b4fd4827faabf059036bc374a0dc9
+blockNumber          551
+from                 0xC5BA3Bc08F44fc1992e2460b4c541D57ef0Df949
+gas                  21032
+gasPrice             7
+hash                 0x944da4ca2c0d58ab6c2b6f6f2fc5fd9e6f0dccf35f53d114424514e43d4d45b9
+input                0xafed
+nonce                0
+r                    0xc5f326c4c3bc9e5eca6808662287f6f5cf524fc25fa12dc00479acf2a0718498
+s                    0x4f9635f7d35e1856320967a6f08bbad03db34f359fa292b3261b0d07fea76345
+to                   0xd46E8dD67C5d32be8058Bb8Eb970870F07244567
+transactionIndex     0
+v                    1
+value                5000000000

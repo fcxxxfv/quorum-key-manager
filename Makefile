@@ -59,7 +59,7 @@ postgres-tls:
 postgres-down:
 	@docker compose -f deps/docker-compose.yml down --volumes --timeout 0
 
-deps: networks volumes hashicorp postgres
+deps: networks volumes  postgres
 
 deps-tls: networks generate-pki hashicorp-tls postgres-tls
 
@@ -102,7 +102,7 @@ qkm: gobuild
 
 dev: deps qkm
 
-up: deps go-quorum besu geth gobuild qkm
+up: deps geth gobuild qkm
 
 up-tls: deps-tls go-quorum besu geth gobuild
 	@docker compose -f ./docker-compose.dev.yml up --build -d $(KEY_MANAGER_SERVICES)
