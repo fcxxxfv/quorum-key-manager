@@ -29,7 +29,7 @@ curl -X POST 'http://localhost:8080/stores/eth-accounts/ethereum'
 
 
 
-给创建的地址转点toekn
+给创建的地址转点token(替换上一步创建的地址,例如 替换：0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949)
 
 cast send -r http://127.0.0.1:8546 -f 7e654d251da770a068413677967f6d3ea2fea9e4 -i --chain 888 --value 5000000000000000000 --private-key 0x56202652fdffd802b7252a456dbd8f3ecc0352bbde76c23b40afe8aebd714e2e 0xc5ba3bc08f44fc1992e2460b4c541d57ef0df949
 
